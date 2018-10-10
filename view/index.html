@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Visual Binary Calculator</title>
+    <script src="https://peterolson.github.com/BigInteger.js/BigInteger.min.js"></script>
+    <style type="text/css">
+        td {
+            width:20px;
+            height:20px;
+            text-align: center;
+            vertical-align: center;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <table id="tab_c1" style="border:1px solid #888;"></table>
+    <br/>
+    <br/>
+    <table id="tab_c2" style="border:1px solid #888;"></table>
+    <br/>
+    <button onclick="multiply()">Multiply</button>
+    <button onclick="divide()">Divide</button>
+
+    <table id="tab_c3" style="border:1px solid #888;"></table>
+<script type="text/javascript">
+
+    window.onload = function() {
+
+        let tab = document.querySelectorAll("table");
+        for( var t=0;t<3;t++){
+            for (var r = 0; r < 8; r++) {
+                let row = document.createElement("tr");
+                for (var f = 0; f < 8; f++) {
+                    let square = document.createElement("td");
+                    square.addEventListener("click", (e)=>{
+                        e.target.innerHTML === '0' ? e.target.innerHTML = '1' : e.target.innerHTML = '0';
+                    });
+                    square.innerHTML = "0";
+                    row.appendChild(square);
+                }
+                tab[t].appendChild(row);
+            }
+        }
+
+    };
+
+    function numberFromTable(tableId) {
+        let cells = document.querySelectorAll(tableId + " td");
+        let num = bigInt(0);
+        for (let c = 0; c < 64; c++) {
+            if( !cells[c] ){
+                debugger;
+            }
+            if (cells[c].innerHTML === "1") {
+                num = num.add(1);
+            }
+            if (c < 63) {
+                num = num.shiftLeft(1);
+            }
+        }
+
+        return num;
+    }
+
+    function multiply(){
+        let c1 = numberFromTable("#tab_c1");
+        let c2 = numberFromTable("#tab_c2");
+        let product = c1.multiply(c2);
+        console.log( product.toString() );
+        displayNumber("#tab_c3", product );
+
+    }
+
+    function divide(){
+        let c1 = numberFromTable("#tab_c1");
+        let c2 = numberFromTable("#tab_c2");
+        let product = c1.divide(c2);
+        console.log( product.toString() );
+        displayNumber("#tab_c3", product );
+
+    }
+
+    function displayNumber(tableId, num ){
+
+        let binary = num.toString(2).split("");
+        console.log( binary );
+        let cells = document.querySelectorAll("#tab_c3 td");
+        for( let t=63;t>=0;t--){
+            if( t >= binary.length ) {
+                cells[63-t].innerHTML = "0";
+            }
+            else {
+                cells[63-t].innerHTML = binary[binary.length-t-1];
+            }
+        }
+
+    }
+
+
+
+</script>
+</body>
+</html>
